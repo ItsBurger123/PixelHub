@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PixelHub — Play & Explore</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+:root{--ink:#37334b;--muted:#827d98;--purple:#9b86df;--bg:#fbf9ff;--line:#eee9f7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Nunito,Segoe UI,sans-serif}
+button,input{font:inherit}button,a{cursor:pointer}
+.topbar{height:72px;padding:0 6%;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid var(--line);gap:12px}
+.logo{font-size:22px;font-weight:900;text-decoration:none;color:var(--ink)}.logo span{color:var(--purple)}
+.top-link{color:#8070bb;text-decoration:none;font-size:13px;font-weight:900}
+main{width:min(1100px,92%);margin:auto}
+.hero{margin-top:28px;padding:40px 6%;border-radius:26px;background:linear-gradient(115deg,#f8dce9,#e9e2ff 70%,#e0efff);display:flex;justify-content:space-between;align-items:center;gap:24px;overflow:hidden}
+.eyebrow{font-size:11px;font-weight:900;letter-spacing:2px;color:#917cce}
+h1{font-size:clamp(38px,6vw,64px);line-height:1;margin:12px 0;letter-spacing:-2px}
+.hero p{color:#6f6885;line-height:1.7;max-width:430px}
+.primary,.play{border:0;border-radius:12px;background:#927cdb;color:white;font-weight:900;padding:12px 17px;text-decoration:none;display:inline-block}
+.hero-emoji{font-size:110px;transform:rotate(8deg);padding:20px}
+.section{margin:42px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:15px;flex-wrap:wrap;margin-bottom:17px}
+h2{margin:5px 0;font-size:clamp(25px,4vw,32px)}
+.search{border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px 14px;min-width:230px;outline:none}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.filter{border:1px solid var(--line);background:white;color:#817a97;border-radius:30px;padding:9px 14px;font-size:12px;font-weight:900}
+.filter.active{background:#9b86df;color:white;border-color:#9b86df}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.card{padding:12px;background:white;border:1px solid var(--line);border-radius:19px;transition:transform .2s;min-width:0}
+.card:hover{transform:translateY(-3px)}
+.art{height:125px;border-radius:13px;display:grid;place-items:center;font-size:54px}
+.lavender{background:#ebe5ff}.pink{background:#ffe3ef}.mint{background:#def5e9}.yellow{background:#fff0cc}.blue{background:#dfedff}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:13px}
+.meta h3{margin:0;font-size:16px}.tag{background:#f2efff;color:#8c7cbe;padding:5px 8px;border-radius:8px;font-size:10px;font-weight:900}
+.card p{color:var(--muted);font-size:12px;line-height:1.65;min-height:40px}
+.play{width:100%;text-align:center;font-size:12px}
+.play:hover,.primary:hover{filter:brightness(.96)}
+.note{color:#938ca4;font-size:11px}
+footer{text-align:center;padding:32px 15px;background:#fff;border-top:1px solid var(--line);color:var(--muted);font-size:12px;margin-top:50px}
+[hidden]{display:none!important}
+.modal{position:fixed;inset:0;z-index:20;background:#211b369c;display:grid;place-items:center;padding:14px}
+.modal-box{width:min(1050px,100%);background:white;border-radius:20px;padding:15px;max-height:96vh;overflow:auto}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.modal-head h2{font-size:21px}
+.close{border:0;background:#f0ebff;color:#7663b9;border-radius:10px;padding:10px 13px;font-weight:900}
+#world3d{width:100%;height:min(65vh,570px);min-height:320px;display:block;border-radius:14px;background:#bce6ff;outline:none}
+.game-hud{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 3px}
+.hud-pill{background:#f3efff;border-radius:10px;padding:8px 11px;font-size:12px;font-weight:900}
+.game-buttons{display:flex;gap:7px;flex-wrap:wrap}
+.game-buttons button{border:0;border-radius:10px;padding:9px 12px;background:#eee8ff;color:#7865bd;font-weight:900}
+.game-help{font-size:12px;color:var(--muted);line-height:1.6;margin:8px 3px}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-emoji{font-size:75px;padding:5px}}
+@media(max-width:520px){.topbar{padding:0 4%}.hero{padding:27px 7%}.hero-emoji{display:none}.grid{gap:10px}.card{padding:9px}.art{height:95px;font-size:43px}.meta{align-items:start;flex-direction:column}.search{width:100%}#world3d{min-height:280px}}
+</style>
+</head>
+<body>
+<header class="topbar"><a class="logo" href="#">🎮 Pixel<span>Hub</span></a><a class="top-link" href="#games">EXPLORE GAMES ↓</a></header>
+<main>
+<section class="hero"><div><div class="eyebrow">YOUR COZY GAME CORNER</div><h1>Little games.<br><span style="color:#9278dc">Big fun.</span></h1><p>Play mini-games, explore a 3D blocky world, and challenge your friends — all from one place.</p><a class="primary" href="#games">Explore games ↓</a></div><div class="hero-emoji">🎮</div></section>
+<section class="section" id="games">
+ <div class="section-head"><div><div class="eyebrow">THE COLLECTION</div><h2>Pick your game ✨</h2></div><input id="search" class="search" placeholder="Search games..." type="search"></div>
+ <div class="filters"><button class="filter active" data-category="all">All games</button><button class="filter" data-category="world">Worlds</button><button class="filter" data-category="casual">Casual</button><button class="filter" data-category="puzzle">Puzzle</button><button class="filter" data-category="party">Party</button></div>
+ <div class="grid" id="grid">
+  <article class="card" data-name="blockworld 3d obby roblox world" data-category="world"><div class="art lavender">🧱</div><div class="meta"><h3>BlockWorld 3D</h3><span class="tag">3D WORLD</span></div><p>Run, jump, collect coins, and explore a blocky obstacle course.</p><button class="play" data-game="3d">Play 3D world ↗</button></article>
+  <article class="card" data-name="snake" data-category="casual"><div class="art mint">🐍</div><div class="meta"><h3>Snake</h3><span class="tag">ARCADE</span></div><p>Eat food, grow longer, and avoid crashing.</p><button class="play" data-game="snake">Play now ↗</button></article>
+  <article class="card" data-name="memory match cards" data-category="puzzle"><div class="art pink">🧠</div><div class="meta"><h3>Memory Match</h3><span class="tag">PUZZLE</span></div><p>Find all the matching pairs.</p><button class="play" data-game="memory">Play now ↗</button></article>
+  <article class="card" data-name="cookie clicker" data-category="casual"><div class="art yellow">🍪</div><div class="meta"><h3>Cookie Clicker</h3><span class="tag">CASUAL</span></div><p>Click cookies and buy upgrades.</p><button class="play" data-game="clicker">Play now ↗</button></article>
+  <article class="card" data-name="number guess" data-category="puzzle"><div class="art blue">🔢</div><div class="meta"><h3>Number Guess</h3><span class="tag">PUZZLE</span></div><p>Find the secret number from 1 to 100.</p><button class="play" data-game="guess">Play now ↗</button></article>
+  <article class="card" data-name="tic tac toe 2 player" data-category="party"><div class="art lavender">⭕</div><div class="meta"><h3>Tic-Tac-Toe</h3><span class="tag">2 PLAYERS</span></div><p>Challenge a friend on the same screen.</p><button class="play" data-game="ttt">Play now ↗</button></article>
+  <article class="card" data-name="party arcade four player race" data-category="party"><div class="art yellow">🏁</div><div class="meta"><h3>Party Race</h3><span class="tag">1–4 PLAYERS</span></div><p>Race on one keyboard with up to four players.</p><button class="play" data-game="race">Play now ↗</button></article>
+  <article class="card" data-name="roblox discover" data-category="world"><div class="art pink">🌐</div><div class="meta"><h3>Roblox</h3><span class="tag">EXTERNAL</span></div><p>Open the official Roblox experience browser.</p><a class="play" href="https://www.roblox.com/discover" target="_blank" rel="noopener noreferrer">Explore Roblox ↗</a></article>
+  <article class="card" data-name="1234 player games party" data-category="party"><div class="art mint">👾</div><div class="meta"><h3>1 2 3 4 Player Games</h3><span class="tag">EXTERNAL</span></div><p>Visit the official collection of party games.</p><a class="play" href="https://www.1234playergames.com/" target="_blank" rel="noopener noreferrer">Visit official site ↗</a></article>
+ </div>
+ <p id="no-results" class="note" hidden>No games found. Try another search! 🌸</p>
+</section>
+</main>
+<footer>Made with ♡ and a little bit of pixel magic. 3D mode uses Three.js when the library is available.</footer>
+<div class="modal" id="modal" hidden><div class="modal-box"><div class="modal-head"><h2 id="modalTitle">Game</h2><button class="close" id="close">✕ Close</button></div><div id="gameContent"></div></div></div>
+<!-- Three.js is loaded from a CDN. The rest of the website works if it is unavailable. -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),grid=$('#grid'),modal=$('#modal'),content=$('#gameContent'),title=$('#modalTitle');
+let category='all',cleanup=()=>{};
+function filterGames(){let q=$('#search').value.toLowerCase().trim(),n=0;document.querySelectorAll('#grid .card').forEach(c=>{let ok=c.dataset.name.includes(q)||c.textContent.toLowerCase().includes(q);ok=ok&&(category==='all'||c.dataset.category===category);c.hidden=!ok;if(ok)n++});$('#no-results').hidden=n>0}
+$('#search').addEventListener('input',filterGames);
+document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{category=b.dataset.category;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x===b));filterGames()}));
+function btn(text,fn){let b=document.createElement('button');b.textContent=text;b.addEventListener('click',fn);return b}
+function openGame(id){cleanup();cleanup=()=>{};content.replaceChildren();modal.hidden=false;const names={'3d':'🧱 BlockWorld 3D','snake':'🐍 Snake','memory':'🧠 Memory Match','clicker':'🍪 Cookie Clicker','guess':'🔢 Number Guess','ttt':'⭕ Tic-Tac-Toe','race':'🏁 Party Race'};title.textContent=names[id]||'Game';if(id==='3d')start3D();if(id==='snake')startSnake();if(id==='memory')startMemory();if(id==='clicker')startClicker();if(id==='guess')startGuess();if(id==='ttt')startTTT();if(id==='race')startRace()}
+grid.addEventListener('click',e=>{let b=e.target.closest('[data-game]');if(b)openGame(b.dataset.game)});
+function closeGame(){cleanup();cleanup=()=>{};modal.hidden=true;content.replaceChildren()}
+$('#close').addEventListener('click',closeGame);modal.addEventListener('click',e=>{if(e.target===modal)closeGame()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)closeGame()});
+function start3D(){
+ if(!window.THREE){content.innerHTML='<div style="padding:20px;text-align:center"><h3>3D library could not load 😭</h3><p style="color:#827d98">This game needs an internet connection to load Three.js. Your other PixelHub games still work. Try opening the page when the library is accessible.</p><button id="retry3d" class="play">Try again</button></div>';$('#retry3d').onclick=()=>openGame('3d');return}
+ content.innerHTML='<canvas id="world3d" tabindex="0" aria-label="3D block world"></canvas><div class="game-hud"><span class="hud-pill">🪙 Coins: <b id="coins3d">0</b>/8</span><span class="hud-pill" id="status3d">Reach the golden portal!</span><span class="hud-pill">🚩 <b id="check3d">Start</b></span><div class="game-buttons"><button id="reset3d">↻ Restart</button><button id="look3d">🎨 Change outfit</button></div></div><p class="game-help">Move: WASD or arrow keys · Jump: Space · Camera follows your character. On touch devices, tap the game and use on-screen buttons if shown.</p><div class="game-buttons"><button id="left3d">← Left</button><button id="forward3d">↑ Forward</button><button id="back3d">↓ Back</button><button id="right3d">→ Right</button><button id="jump3d">Jump ⤴</button></div>';
+ const canvas=$('#world3d'),renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setSize(canvas.clientWidth,canvas.clientHeight,false);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+ const scene=new THREE.Scene();scene.background=new THREE.Color('#bde8ff');scene.fog=new THREE.Fog('#bde8ff',28,75);
+ const camera=new THREE.PerspectiveCamera(65,canvas.clientWidth/canvas.clientHeight,.1,150);
+ scene.add(new THREE.HemisphereLight(0xffffff,0x7a9b8c,2));
+ const sun=new THREE.DirectionalLight(0xffffff,2.2);sun.position.set(-8,18,9);sun.castShadow=true;scene.add(sun);
+ const mat=(color,roughness=.85)=>new THREE.MeshStandardMaterial({color,roughness});
+ const grass=mat('#8bd4ad'),grassTop=mat('#a7e8c3'),purple=mat('#a997ef'),pink=mat('#f6b2d4'),gold=mat('#ffd36e'),skin=mat('#f1c7a6'),white=mat('#ffffff'),dark=mat('#36334c');
+ const platforms=[],coins=[],keys=new Set(),touch=new Set();let outfit=0,coinCount=0,checkpoint=0,won=false,raf=0;
+ const avatar=new THREE.Group();scene.add(avatar);
+ const bodyMat=[mat('#927cdb'),mat('#ef9c63'),mat('#55a8ca'),mat('#df6b91')],legMat=[mat('#ffd3e6'),mat('#c8f3df'),mat('#ffe39a'),mat('#d9d2ff')];
+ function box(parent,w,h,d,material,x,y,z){const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);mesh.position.set(x,y,z);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh}
+ const torso=box(avatar,.72,.78,.38,bodyMat[0],0,1.15,0),head=box(avatar,.58,.58,.55,skin,0,1.83,0),leg1=box(avatar,.25,.55,.3,legMat[0],-.2,.48,0),leg2=box(avatar,.25,.55,.3,legMat[0],.2,.48,0);
+ box(avatar,.08,.08,.035,dark,-.13,1.9,.286);box(avatar,.08,.08,.035,dark,.13,1.9,.286);
+ function platform(x,y,z,w,d,material=grassTop,thick=.5){box(scene,w,thick,d,material,x,y-thick/2,z);platforms.push({x,y,z,w,d,top:y})}
+ // Main island, stepping platforms, checkpoints, and portal platform
+ platform(0,-.35,0,15,15,grass,.7);
+ platform(0,.2,-9,3,3,purple,.45);platform(3,.8,-13,2.8,2.8,pink,.45);platform(0,1.3,-17,3,3,purple,.45);
+ platform(-3,1.8,-21,3,3,grassTop,.45);platform(0,2.1,-25,3,3,purple,.45);platform(3,2.6,-29,4,4,gold,.5);
+ // Decorative trees on start island
+ for(const [x,z] of [[-5,-3],[5,2],[-5,4],[5,-5]]){box(scene,.45,1.4,.45,mat('#b77b60'),x,.35,z);const crown=box(scene,1.8,1.8,1.8,mat('#91dcb2'),x,1.8,z);crown.rotation.y=.2}
+ // portal ring
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(.8,.12,12,32),mat('#ffb9e7',{roughness:.3}));ring.position.set(3,3.6,-29);scene.add(ring);
+ const portalGlow=new THREE.PointLight('#ffb9e7',2,7);portalGlow.position.set(3,3.5,-29);scene.add(portalGlow);
+ // Floating coins along the route
+ const coinPositions=[[-1,.8,-8],[3,1.5,-13],[0,2,-17],[-3,2.5,-21],[0,2.8,-25],[3,3.5,-29],[-3,1,1],[4,1,-4]];
+ coinPositions.forEach((p,i)=>{const c=new THREE.Mesh(new THREE.TorusGeometry(.24,.08,10,18),gold);c.position.set(...p);c.rotation.x=Math.PI/2;scene.add(c);coins.push({mesh:c,taken:false,baseY:p[1],i})});
+ // cloud puffs
+ for(let i=0;i<12;i++){const cl=box(scene,1.5,.4,.8,white,((i*7)%22)-11,5+(i%3),-((i*11)%38));cl.castShadow=false}
+ let player={x:0,y:0,z:3,vx:0,vy:0,vz:0,onGround:false,spawn:{x:0,y:0,z:3}},lastTime=performance.now();
+ function setOutfit(){torso.material=bodyMat[outfit];leg1.material=legMat[outfit];leg2.material=legMat[outfit]}
+ function setStatus(t){$('#status3d').textContent=t}
+ function reset(){player={x:0,y:0,z:3,vx:0,vy:0,vz:0,onGround:false,spawn:{x:0,y:0,z:3}};coinCount=0;checkpoint=0;won=false;coins.forEach(c=>{c.taken=false;c.mesh.visible=true});$('#coins3d').textContent='0';$('#check3d').textContent='Start';setStatus('Reach the golden portal!')}
+ function jump(){if(player.onGround){player.vy=7.5;player.onGround=false}}
+ function moveDir(key,down){if(down)touch.add(key);else touch.delete(key)}
+ const pointerBindings=[['left3d','a'],['right3d','d'],['forward3d','w'],['back3d','s'],['jump3d','jump']];
+ pointerBindings.forEach(([id,key])=>{const el=$('#'+id);el.addEventListener('pointerdown',e=>{e.preventDefault();moveDir(key,true);if(key==='jump')jump()});['pointerup','pointerleave','pointercancel'].forEach(ev=>el.addEventListener(ev,()=>moveDir(key,false)))});
+ function keydown(e){if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys.add(e.key.toLowerCase());if(e.code==='Space')jump()}
+ function keyup(e){keys.delete(e.key.toLowerCase())}
+ document.addEventListener('keydown',keydown);document.addEventListener('keyup',keyup);
+ $('#reset3d').addEventListener('click',reset);$('#look3d').addEventListener('click',()=>{outfit=(outfit+1)%4;setOutfit();setStatus('Outfit changed! 😎')});
+ function onPlatform(px,pz){return platforms.find(p=>px>p.x-p.w/2+.15&&px<p.x+p.w/2-.15&&pz>p.z-p.d/2+.15&&pz<p.z+p.d/2-.15&&player.y<=p.top+.2&&player.y>=p.top-.8)}
+ function animate(now){
+  if(modal.hidden)return;
+  const dt=Math.min((now-lastTime)/1000,.035);lastTime=now;
+  if(!won){
+   const forward=keys.has('w')||keys.has('arrowup')||touch.has('w'),back=keys.has('s')||keys.has('arrowdown')||touch.has('s'),left=keys.has('a')||keys.has('arrowleft')||touch.has('a'),right=keys.has('d')||keys.has('arrowright')||touch.has('d');
+   const ix=(right?1:0)-(left?1:0),iz=(back?1:0)-(forward?1:0),len=Math.hypot(ix,iz)||1;
+   player.vx=(ix/len)*5;player.vz=(iz/len)*5;player.x+=player.vx*dt;player.z+=player.vz*dt;
+   const oldY=player.y;player.vy-=18*dt;player.y+=player.vy*dt;player.onGround=false;
+   for(const p of platforms){const inside=player.x>p.x-p.w/2-.25&&player.x<p.x+p.w/2+.25&&player.z>p.z-p.d/2-.25&&player.z<p.z+p.d/2+.25;if(inside&&player.vy<=0&&oldY>=p.top-.1&&player.y<=p.top){player.y=p.top;player.vy=0;player.onGround=true;if(p.z<-19&&checkpoint===0){checkpoint=1;player.spawn={x:-3,y:p.top,z:-21};$('#check3d').textContent='Saved!';setStatus('Checkpoint saved! 🚩')}}}
+   if(player.y< -8){player.x=player.spawn.x;player.y=player.spawn.y;player.z=player.spawn.z;player.vy=0;setStatus('You fell! Back to checkpoint.')}
+   avatar.position.set(player.x,player.y,player.z);avatar.rotation.y=Math.atan2(player.vx,player.vz||.0001);
+   coins.forEach(c=>{c.mesh.rotation.z+=dt*2.3;if(!c.taken&&avatar.position.distanceTo(c.mesh.position)<1.05){c.taken=true;c.mesh.visible=false;coinCount++;$('#coins3d').textContent=coinCount;setStatus('Coin collected! ✨')}});
+   if(player.z< -27&&player.x>1&&player.x<5&&player.y>1.7){won=true;setStatus('You reached the portal! You win! 🏆')}
+  }
+  const target=new THREE.Vector3(player.x,player.y+1.1,player.z);camera.position.lerp(new THREE.Vector3(player.x+8,player.y+7,player.z+10),.09);camera.lookAt(target);
+  const width=canvas.clientWidth,height=canvas.clientHeight;if(canvas.width!==Math.floor(width*renderer.getPixelRatio())||canvas.height!==Math.floor(height*renderer.getPixelRatio()))renderer.setSize(width,height,false);
+  camera.aspect=width/height;camera.updateProjectionMatrix();renderer.render(scene,camera);raf=requestAnimationFrame(animate)
+ }
+ setOutfit();reset();canvas.focus();animate(performance.now());
+ cleanup=()=>{cancelAnimationFrame(raf);document.removeEventListener('keydown',keydown);document.removeEventListener('keyup',keyup);renderer.dispose();scene.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material){if(Array.isArray(o.material))o.material.forEach(m=>m.dispose());else o.material.dispose()}})}
+}
+function startClicker(){let n=0,power=1,cost=15;content.innerHTML='<p class="game-help">Click the cookie to earn cookies. Buy upgrades to double your clicks.</p><div class="game-hud"><span class="hud-pill" id="cookieScore">🍪 0 cookies</span><span class="hud-pill" id="cookieStatus">Have fun!</span></div><div style="text-align:center;padding:18px"><button id="cookie" style="font-size:75px;border:0;border-radius:50%;background:#fff0cc;width:145px;height:145px">🍪</button><p><button id="upgrade" class="play">Upgrade · 15 cookies</button></p></div>';$('#cookie').onclick=()=>{n+=power;$('#cookieScore').textContent=`🍪 ${n} cookies`};$('#upgrade').onclick=()=>{if(n<cost){$('#cookieStatus').textContent='Need more cookies!';return}n-=cost;power*=2;cost=Math.ceil(cost*2.2);$('#cookieScore').textContent=`🍪 ${n} cookies`;$('#upgrade').textContent=`Double clicks · ${cost} cookies`;$('#cookieStatus').textContent='Upgrade purchased! ✨'}}
+function startGuess(){let secret=Math.floor(Math.random()*100)+1,tries=0;content.innerHTML='<p class="game-help">Guess the secret number from 1 to 100.</p><input id="guessInput" type="number" min="1" max="100" placeholder="Your guess" style="padding:12px;border:1px solid #ddd;border-radius:10px"><button id="guessBtn" class="play">Guess</button><div class="game-hud"><span class="hud-pill" id="guessStatus">Make a guess!</span><span class="hud-pill" id="guessCount">Guesses: 0</span></div><button id="guessNew" class="play">New number</button>';function go(){let v=Number($('#guessInput').value);if(!$('#guessInput').value||v<1||v>100||!Number.isInteger(v)){$('#guessStatus').textContent='Use a whole number from 1 to 100.';return}tries++;$('#guessCount').textContent=`Guesses: ${tries}`;$('#guessStatus').textContent=v===secret?`Correct in ${tries} guesses! 🎉`:v<secret?'Too low — go higher ↑':'Too high — go lower ↓';$('#guessInput').value=''}$('#guessBtn').onclick=go;$('#guessInput').onkeydown=e=>{if(e.key==='Enter')go()};$('#guessNew').onclick=()=>{secret=Math.floor(Math.random()*100)+1;tries=0;$('#guessCount').textContent='Guesses: 0';$('#guessStatus').textContent='New number ready!'}}
+function startTTT(){content.innerHTML='<p class="game-help">Two players take turns. X goes first.</p><div class="game-hud"><span class="hud-pill" id="tttStatus">Player X turn</span></div><div class="board" id="tttBoard" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:320px;margin:15px auto"></div><button id="tttReset" class="play">Restart</button>';let cells=Array(9).fill(''),turn='X',over=false;function win(){return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].some(([a,b,c])=>cells[a]&&cells[a]===cells[b]&&cells[a]===cells[c])}function draw(){const board=$('#tttBoard');board.replaceChildren();cells.forEach((v,i)=>{let b=btn(v||' ',()=>{if(over||cells[i])return;cells[i]=turn;if(win()){over=true;$('#tttStatus').textContent=`Player ${turn} wins! 🎉`}else if(cells.every(Boolean)){over=true;$('#tttStatus').textContent="It's a draw!"}else{turn=turn==='X'?'O':'X';$('#tttStatus').textContent=`Player ${turn}'s turn`}draw()});b.style.aspectRatio='1';b.style.fontSize='32px';b.style.background='#eee8ff';b.style.color='#7967bd';b.disabled=!!v||over;board.appendChild(b)})}function reset(){cells=Array(9).fill('');turn='X';over=false;$('#tttStatus').textContent="Player X's turn";draw()}$('#tttReset').onclick=reset;draw()}
+function startRace(){content.innerHTML='<p class="game-help">Player 1: A · Player 2: F · Player 3: J · Player 4: L. Press your key repeatedly to race!</p><div id="raceLanes" style="display:grid;gap:12px"></div><div class="game-hud"><span class="hud-pill" id="raceStatus">First to 100% wins!</span></div><button id="raceReset" class="play">Restart race</button>';let players=[['Player 1','a','#eaa7c8'],['Player 2','f','#9a89e5'],['Player 3','j','#7ec9b1'],['Player 4','l','#f0c46d']],p=[0,0,0,0],over=false;const lanes=$('#raceLanes'),bars=[],labels=[];players.forEach((pl,i)=>{let wrap=document.createElement('div'),lab=document.createElement('b'),lane=document.createElement('div'),bar=document.createElement('div');lab.textContent=`${pl[0]} — ${pl[1].toUpperCase()}`;lab.style.fontSize='12px';lane.style.cssText='height:23px;background:#eee8ff;border-radius:99px;overflow:hidden;margin-top:4px';bar.style.cssText=`height:100%;width:0;background:${pl[2]};transition:width .06s`;lane.appendChild(bar);wrap.append(lab,lane);lanes.appendChild(wrap);bars.push(bar);labels.push(lab)});function handler(e){let i=players.findIndex(x=>x[1]===e.key.toLowerCase());if(i<0||over)return;p[i]=Math.min(100,p[i]+5);bars[i].style.width=p[i]+'%';labels[i].textContent=`${players[i][0]} — ${players[i][1].toUpperCase()} — ${p[i]}%`;if(p[i]>=100){over=true;$('#raceStatus').textContent=`${players[i][0]} wins! 🏆`}}document.addEventListener('keydown',handler);$('#raceReset').onclick=()=>{p=[0,0,0,0];over=false;bars.forEach(b=>b.style.width='0%');labels.forEach((l,i)=>l.textContent=`${players[i][0]} — ${players[i][1].toUpperCase()}`);$('#raceStatus').textContent='First to 100% wins!'};cleanup=()=>document.removeEventListener('keydown',handler)}
+function startMemory(){const syms=['🍓','🐸','🌈','🐱','⭐','🍄','🍉','🐼'];let cards=[...syms,...syms].sort(()=>Math.random()-.5),flipped=[],matched=new Set(),moves=0,lock=false,timer;content.innerHTML='<p class="game-help">Find all matching pairs.</p><div class="game-hud"><span class="hud-pill" id="memScore">Moves: 0</span><span class="hud-pill" id="memStatus">Find a pair!</span></div><div id="memGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:15px 0"></div><button id="memReset" class="play">Restart</button>';const board=$('#memGrid');function build(){cards=[...syms,...syms].sort(()=>Math.random()-.5);flipped=[];matched=new Set();moves=0;lock=false;board.replaceChildren();$('#memScore').textContent='Moves: 0';$('#memStatus').textContent='Find a pair!';cards.forEach((s,i)=>{let b=btn('?',()=>reveal(i));b.style.cssText='aspect-ratio:1;padding:0;font-size:clamp(20px,5vw,32px);background:#e9e2ff;color:#7967bd';b.dataset.i=i;board.appendChild(b)})}function reveal(i){if(lock||matched.has(i)||flipped.includes(i))return;board.children[i].textContent=cards[i];flipped.push(i);if(flipped.length===2){moves++;$('#memScore').textContent=`Moves: ${moves}`;if(cards[flipped[0]]===cards[flipped[1]]){flipped.forEach(j=>{matched.add(j);board.children[j].style.background='#d9f5e5'});flipped=[];if(matched.size===16)$('#memStatus').textContent=`You won in ${moves} moves! 🎉`}else{lock=true;timer=setTimeout(()=>{flipped.forEach(j=>board.children[j].textContent='?');flipped=[];lock=false},700)}}}$('#memReset').onclick=build;cleanup=()=>clearTimeout(timer);build()}
+function startSnake(){content.innerHTML='<p class="game-help">Use the arrow keys to eat the pink food. Avoid the walls and yourself.</p><canvas id="snakeCanvas" width="360" height="360" style="width:min(100%,360px);margin:10px auto;display:block;border-radius:10px;background:#e3f6e9"></canvas><div class="game-hud"><span class="hud-pill" id="snakeScore">Score: 0</span><span class="hud-pill" id="snakeStatus">Press an arrow key to start</span></div><button id="snakeReset" class="play">Restart</button>';const c=$('#snakeCanvas'),ctx=c.getContext('2d'),N=20,S=18;let snake,dir,food,score,run,timer;function foodNew(){do{food={x:Math.floor(Math.random()*N),y:Math.floor(Math.random()*N)}}while(snake.some(p=>p.x===food.x&&p.y===food.y))}function draw(){ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle='#f28a9e';ctx.fillRect(food.x*S+2,food.y*S+2,S-4,S-4);snake.forEach((p,i)=>{ctx.fillStyle=i?'#83d5a8':'#4caa80';ctx.fillRect(p.x*S+1,p.y*S+1,S-2,S-2)})}function reset(){clearInterval(timer);snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];dir={x:1,y:0};score=0;run=false;foodNew();$('#snakeScore').textContent='Score: 0';$('#snakeStatus').textContent='Press an arrow key to start';draw()}function tick(){if(!run)return;let h={x:snake[0].x+dir.x,y:snake[0].y+dir.y},eat=h.x===food.x&&h.y===food.y,body=eat?snake:snake.slice(0,-1);if(h.x<0||h.y<0||h.x>=N||h.y>=N||body.some(p=>p.x===h.x&&p.y===h.y)){run=false;clearInterval(timer);$('#snakeStatus').textContent='Game over! Restart to play again.';return}snake.unshift(h);if(eat){score++;$('#snakeScore').textContent=`Score: ${score}`;foodNew()}else snake.pop();draw()}function key(e){let map={ArrowUp:{x:0,y:-1},ArrowDown:{x:0,y:1},ArrowLeft:{x:-1,y:0},ArrowRight:{x:1,y:0}},d=map[e.key];if(!d||modal.hidden||title.textContent.indexOf('Snake')<0)return;e.preventDefault();if(d.x+dir.x===0&&d.y+dir.y===0)return;dir=d;if(!run){run=true;$('#snakeStatus').textContent='Go snake go!';timer=setInterval(tick,125)}}document.addEventListener('keydown',key);$('#snakeReset').onclick=reset;cleanup=()=>{clearInterval(timer);document.removeEventListener('keydown',key)};reset()}
+</script>
+</body>
+</html>
